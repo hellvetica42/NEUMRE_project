@@ -17,7 +17,7 @@ from Estimator import *
 from utils import drawKeypoints
 
 
-_WIN_NAME = "DrunkPose"
+_WIN_NAME = "CharacterPose"
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
