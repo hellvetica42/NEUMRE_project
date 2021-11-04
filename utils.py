@@ -41,10 +41,6 @@ def drawSkel(keypoints, image):
 
         image = cv2.polylines(image, polygons, isClosed=False, color=(255, 255, 255))
 
-def drawSimilarityMetric(image, similarity):
-    font = cv2.FONT_HERSHEY_COMPLEX
-    image = cv2.putText(image, str(similarity), (50, 50), font, 1, (255, 255, 0), 2, cv2.LINE_AA)
-
 
 
 
