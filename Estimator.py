@@ -1,4 +1,4 @@
-import posenet #pylint: disable=import-error
+import posenet 
 
 class Estimator():
 

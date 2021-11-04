@@ -1,11 +1,6 @@
-import time
-from os import listdir
-from os.path import isfile, join, abspath
 import argparse
-import ctypes
 
 import cv2
-from numpy.core.numeric import NaN
 from Smoothing import Smoothing #pylint: disable=import-error
 import tensorflow.compat.v1 as tf #pylint: disable=import-error
 tf.disable_v2_behavior()
