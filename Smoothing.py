@@ -1,27 +1,39 @@
 import numpy as np
 
 class Smoothing:
-    def __init__(self, sample_size=10) -> None:
-        self.sample_size = sample_size
-        self.current_kps = None
-        self.accumulator = None
-        self.sample_count = 0
+    def __init__(self, num_samples=10) -> None:
+        self.num_samples = num_samples
+        self.count = 0
+        self.currentSample = None
+        self.lastSample = None
 
-    def add_sample(self, keypoints):
-        if self.current_kps is None:
-            self.current_kps = keypoints
+        self.currentValue = None
 
-        if self.accumulator is None:
-            self.accumulator = np.zeros(keypoints.shape)
+        self.samples = []
 
-        if self.sample_count < self.sample_size:
-            self.accumulator += keypoints
-            self.sample_count += 1
+
+    def getSample(self, sample):
+        if self.num_samples == 1:
+            return sample
+
+        self.count += 1
         
-        else:
-            self.accumulator /= self.sample_size
-            self.current_kps = self.accumulator
-            self.accumulator = None
-            self.sample_count = 0
+        if self.currentSample is None:
+            self.currentSample = sample
+            self.lastSample = sample
 
-        return self.current_kps
+        if self.currentValue is None:
+            self.currentValue = sample
+
+        if self.count < self.num_samples:
+            self.samples.append(sample)
+
+            self.currentValue = self.lastSample + self.count*((self.currentSample-self.lastSample)/self.num_samples)
+
+        else:
+            self.lastSample = self.currentSample
+            self.currentSample = np.average(self.samples, axis=0)
+            self.samples.clear()
+            self.count = 0
+
+        return self.currentValue
