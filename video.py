@@ -22,6 +22,7 @@ _DRAW_WIN_NAME = "Drawing"
 _FPS = 24
 _SPF = 1.0/_FPS
 
+#checks if file exists
 def file_path(string):
     if os.path.isfile(string):
         return string
@@ -29,6 +30,7 @@ def file_path(string):
         raise FileNotFoundError(string)
 
 if __name__ == "__main__":
+
     parser = argparse.ArgumentParser()
     parser.add_argument('-draw_skel', action='store_true')
     parser.add_argument('-path', type=file_path)
@@ -45,13 +47,11 @@ if __name__ == "__main__":
         print("Error opening file", args.path)
         exit()
 
-    cap.set(cv2.CAP_PROP_FPS, 24)
-
     draw = Drawing()
 
     with tf.Session() as sess:
         estimator = Estimator(sess) #load posenet model
-        smoothing = Smoothing(5)
+        smoothing = Smoothing(3) #initialize smoothing function
 
         while True:
             start_time = time.perf_counter()
@@ -60,19 +60,22 @@ if __name__ == "__main__":
             if ret is False:
                 break
 
+            #create empty white image for drawing
             if args.draw_stick:
                 white_img = np.zeros(frame.shape, dtype='uint8')
                 white_img[:] = 255
 
-
+            #get keypoints for posenet
             keypoints = estimator.get_keypoints(frame)
-            overlay_image = frame.copy()
 
             #if detection exists
             if 0 not in keypoints:
+
+                #get smooth keypoints 
                 smooth_kps = smoothing.getSample(keypoints[0])
+
                 if args.draw_skel:
-                    drawKeypoints([smooth_kps], overlay_image, skel=True)
+                    drawKeypoints([smooth_kps], frame, skel=True)
 
                 if args.draw_stick:
                     draw.drawStickman(smooth_kps, white_img)
@@ -80,14 +83,16 @@ if __name__ == "__main__":
             if args.draw_stick:
                 cv2.imshow(_DRAW_WIN_NAME, white_img)
 
-            cv2.imshow(_WIN_NAME, overlay_image)
+            cv2.imshow(_WIN_NAME, frame)
 
             end_time = time.perf_counter()
 
+            #calculate time to wait to reach fps
             wait_time = int(max(_SPF - (end_time-start_time), 0) * 1000)
             wait_time = 1 if wait_time == 0 else wait_time
 
             char = cv2.waitKey(wait_time)
+
             if char == ord('q'):
                 break
             elif char == ord('n'):
