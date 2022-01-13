@@ -120,6 +120,9 @@ def overlay_transparent(background, overlay, x, y):
     if x >= background_width or y >= background_height:
         return background
 
+    if x < 0 or y < 0:
+        return background
+
     h, w = overlay.shape[0], overlay.shape[1]
 
     if x + w > background_width:

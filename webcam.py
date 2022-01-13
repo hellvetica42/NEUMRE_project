@@ -1,6 +1,7 @@
 import argparse
 
 import cv2
+from Character import Character
 from Smoothing import Smoothing 
 import tensorflow.compat.v1 as tf # type: ignore
 tf.disable_v2_behavior()
@@ -14,6 +15,7 @@ from utils import drawKeypoints
 
 
 _WIN_NAME = "CharacterPose"
+_CHARACTER_PATH = "Characters/fighter"
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -33,10 +35,11 @@ if __name__ == "__main__":
         print("Opening video capture failed. Exiting.")
         exit()
 
+    character = Character(_CHARACTER_PATH)
 
     with tf.Session() as sess:
         estimator = Estimator(sess) #load posenet model
-        smoothing = Smoothing(10)
+        smoothing = Smoothing(3)
 
         #cv2.namedWindow(_WIN_NAME, cv2.WND_PROP_FULLSCREEN)
         #cv2.setWindowProperty(_WIN_NAME, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
@@ -51,10 +54,13 @@ if __name__ == "__main__":
             #if detection exists
             if 0 not in keypoints:
 
-                if args.draw_skel:
-                    drawKeypoints(smoothing.add_sample(keypoints), overlay_image, skel=True)
+                #get smooth keypoints 
+                smooth_kps = smoothing.getSample(keypoints[0])
 
-            #drawStrikePose(stitched_image)
+                if args.draw_skel:
+                    drawKeypoints([smooth_kps], overlay_image, skel=True)
+
+            character.drawCharacter(smooth_kps, overlay_image)
             cv2.imshow(_WIN_NAME, overlay_image)
 
             char = cv2.waitKey(1)

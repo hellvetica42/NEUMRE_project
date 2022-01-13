@@ -1,16 +1,16 @@
 {
     "torso-upper":[0,0],
-    "head":[0, -130],
+    "head":[0, 50],
     "torso-lower":[100, 10],
 
     "left-arm-upper":[50, 80],
     "left-arm-lower":[-20, 80],
 
-    "right-arm-upper":[50, 10],
-    "right-arm-lower":[-25, -25],
+    "right-arm-upper":[50, 20],
+    "right-arm-lower":[0, 0],
 
-    "left-leg-upper":[81, 100],
-    "left-leg-lower":[81, 176],
+    "left-leg-upper":[150, 70],
+    "left-leg-lower":[-81, 70],
 
     "right-leg-upper":[150, 30],
     "right-leg-lower":[-81, 176]
