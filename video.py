@@ -9,6 +9,7 @@ from Smoothing import Smoothing
 from Estimator import *
 from utils import drawKeypoints
 from Drawing import Drawing
+from Character import Character
 
 import tensorflow.compat.v1 as tf # type: ignore
 tf.disable_v2_behavior()
@@ -18,6 +19,7 @@ if len(physical_devices) > 0:
     tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 _WIN_NAME = "CharacterPose"
+_CHARACTER_PATH = "Characters/fighter"
 _DRAW_WIN_NAME = "Drawing"
 _FPS = 24
 _SPF = 1.0/_FPS
@@ -47,6 +49,7 @@ if __name__ == "__main__":
         print("Error opening file", args.path)
         exit()
 
+    character = Character(_CHARACTER_PATH)
     draw = Drawing()
 
     with tf.Session() as sess:
@@ -82,6 +85,8 @@ if __name__ == "__main__":
 
             if args.draw_stick:
                 cv2.imshow(_DRAW_WIN_NAME, white_img)
+
+            character.drawCharacter(smooth_kps, frame)
 
             cv2.imshow(_WIN_NAME, frame)
 
