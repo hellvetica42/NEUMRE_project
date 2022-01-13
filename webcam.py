@@ -1,6 +1,7 @@
 import argparse
 
 import cv2
+import numpy as np
 from Character import Character
 from Smoothing import Smoothing 
 import tensorflow.compat.v1 as tf # type: ignore
@@ -48,6 +49,9 @@ if __name__ == "__main__":
             ret, frame = cap.read()
             frame = cv2.flip(frame, 1) #flip image so it looks like mirror
 
+            blank_img = np.zeros(frame.shape, dtype='uint8')
+            blank_img[:] = 255
+
             keypoints = estimator.get_keypoints(frame)
             overlay_image = frame.copy()
 
@@ -60,7 +64,8 @@ if __name__ == "__main__":
                 if args.draw_skel:
                     drawKeypoints([smooth_kps], overlay_image, skel=True)
 
-            character.drawCharacter(smooth_kps, overlay_image)
+            character.drawCharacter(smooth_kps, blank_img)
+            cv2.imshow("Character", blank_img)
             cv2.imshow(_WIN_NAME, overlay_image)
 
             char = cv2.waitKey(1)

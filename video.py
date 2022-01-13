@@ -63,6 +63,10 @@ if __name__ == "__main__":
             if ret is False:
                 break
 
+            blank_img = np.zeros(frame.shape, dtype='uint8')
+            blank_img[:] = 255
+
+
             #create empty white image for drawing
             if args.draw_stick:
                 white_img = np.zeros(frame.shape, dtype='uint8')
@@ -86,9 +90,10 @@ if __name__ == "__main__":
             if args.draw_stick:
                 cv2.imshow(_DRAW_WIN_NAME, white_img)
 
-            character.drawCharacter(smooth_kps, frame)
+            character.drawCharacter(smooth_kps+50, blank_img)
 
             cv2.imshow(_WIN_NAME, frame)
+            cv2.imshow("Character", blank_img)
 
             end_time = time.perf_counter()
 
